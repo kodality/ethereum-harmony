@@ -265,7 +265,7 @@ var BlockchainView = (function () {
                         block.y         = height - GAP * (block.index + 1) - BLOCK_HEIGHT * (block.index + 1);
                         block.width     = BLOCK_WIDTH;
                         block.height    = BLOCK_HEIGHT;
-                        block.uri       = '/terminal#' + encodeURIComponent('eth_getBlockByHash ' + block.blockHash + ' false');
+                        block.uri       = '/eth/terminal#' + encodeURIComponent('eth_getBlockByHash ' + block.blockHash + ' false');
                     }
                 });
             });

@@ -100,7 +100,7 @@
             console.log('onAddSourceCode');
             $http({
                 method: 'POST',
-                url: 'eth/contracts/add',
+                url: 'contracts/add',
                 data: {
                     address: remove0x($scope.newContract.address).toLowerCase(),
                     sourceCode: $scope.newContract.sourceCode

@@ -27,7 +27,7 @@
         scrollButtons: { enable: false }
     });
 
-    var JSON_RPC_URL = '/rpc';
+    var JSON_RPC_URL = '/eth/rpc';
 
 
     /**
