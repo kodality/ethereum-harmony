@@ -17,7 +17,7 @@
         return {
             Contracts: {
                 getIndexStatus: function() {
-                    return $http.get('/contracts/indexStatus').then(enhanceResult);
+                    return $http.get('/eth/contracts/indexStatus').then(enhanceResult);
                 }
             }
         };

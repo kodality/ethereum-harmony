@@ -100,7 +100,7 @@
             console.log('onAddSourceCode');
             $http({
                 method: 'POST',
-                url: '/contracts/add',
+                url: 'eth/contracts/add',
                 data: {
                     address: remove0x($scope.newContract.address).toLowerCase(),
                     sourceCode: $scope.newContract.sourceCode
@@ -159,7 +159,7 @@
             });
 
             $http.post(
-                '/contracts/' + remove0x($scope.newContract.address).toLowerCase() + '/files',
+                'contracts/' + remove0x($scope.newContract.address).toLowerCase() + '/files',
                 formData,
                 {
                     withCredentials: false,
@@ -175,7 +175,7 @@
                     showFormError('Upload failed', result.errorMessage || 'Unknown error');
                 } else {
                     //return $scope.loadContracts().then($scope.onBackToList);
-                    $location.path('/contracts');
+                    $location.path('contracts');
                 }
             });
         };

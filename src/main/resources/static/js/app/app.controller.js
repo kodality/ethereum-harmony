@@ -300,7 +300,7 @@
                 //console.log(args);
             });
 
-            $stomp.connect('/websocket', {}, disconnect)
+            $stomp.connect('/eth/websocket', {}, disconnect)
                 .then(function (frame) {
                     setConnected(true);
                     if (connectionLostOnce) {

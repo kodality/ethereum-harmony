@@ -215,7 +215,7 @@
             // #2 Load fields
             $http({
                 method: 'GET',
-                url: '/contracts/' + remove0x($scope.storage.address).toLowerCase() + '/storage',
+                url: '/eth/contracts/' + remove0x($scope.storage.address).toLowerCase() + '/storage',
                 params: {
                     path: '',           // root of contract
                     page: 0,
@@ -239,7 +239,7 @@
             var deferred = $q.defer();
             $http({
                 method: 'GET',
-                url: '/contracts/list'
+                url: '/eth/contracts/list'
             }).then(
                 function(result) {
                     //console.log(result);
@@ -262,7 +262,7 @@
             if (confirm("Are you sure? Stopping watching this address will remove it from listing.")) {
                 $http({
                     method: 'POST',
-                    url: '/contracts/' + remove0x(item.address).toLowerCase() + '/delete'
+                    url: '/eth/contracts/' + remove0x(item.address).toLowerCase() + '/delete'
                 }).then($scope.loadContracts);
             }
         };
@@ -271,7 +271,7 @@
             var lastItem = $scope.lastViewingItem;
             $http({
                     method: 'POST',
-                    url: '/contracts/' + remove0x($scope.storage.address).toLowerCase() + '/clearContractStorage',
+                    url: '/eth/contracts/' + remove0x($scope.storage.address).toLowerCase() + '/clearContractStorage',
                     params: {}
             })
                 .then(function() {
@@ -289,7 +289,7 @@
             var lastItem = $scope.lastViewingItem;
             $http({
                 method: 'POST',
-                url: '/contracts/' + remove0x($scope.storage.address).toLowerCase() + '/importFromExplorer',
+                url: '/eth/contracts/' + remove0x($scope.storage.address).toLowerCase() + '/importFromExplorer',
                 params: {}
             }).then(function(result) {
                 console.log('Imported addition result');
@@ -351,7 +351,7 @@
             function load(entry, page, size) {
                 return $http({
                     method: 'GET',
-                    url: '/contracts/' + remove0x($scope.storage.address).toLowerCase() + '/storage',
+                    url: '/eth/contracts/' + remove0x($scope.storage.address).toLowerCase() + '/storage',
                     //url: '/contracts/' + remove0x($scope.storage.address).toLowerCase(),
                     params: {
                         path: entry.key ? entry.key.path : "",
