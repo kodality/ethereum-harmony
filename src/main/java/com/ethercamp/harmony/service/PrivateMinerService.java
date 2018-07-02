@@ -19,7 +19,9 @@
 package com.ethercamp.harmony.service;
 
 import com.ethercamp.harmony.model.dto.MinerStatusDTO;
+import com.ethercamp.harmony.util.BlockUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.queue.CircularFifoQueue;
 import org.ethereum.config.SystemProperties;
 import org.ethereum.core.Block;
 import org.ethereum.core.Repository;
@@ -31,6 +33,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Queue;
 
 /**
  * Created by Stan Reshetnyk on 19.08.16.
@@ -56,6 +61,9 @@ public class PrivateMinerService {
     @Autowired
     private ClientMessageService clientMessageService;
 
+    private final static int AVG_METRICS_BASE = 100;
+    Queue<Block> latestBlocks = new CircularFifoQueue<>(AVG_METRICS_BASE);
+
     private MineStatus status = MineStatus.DISABLED;
 
     @PostConstruct
@@ -74,6 +82,7 @@ public class PrivateMinerService {
             public void miningStopped() {
                 status = MineStatus.DISABLED;
                 pushStatus(status);
+                latestBlocks.clear();
                 log.info("miningStopped");
             }
 
@@ -87,6 +96,7 @@ public class PrivateMinerService {
                 if (status != MineStatus.MINING) {
                     status = MineStatus.MINING;
                 }
+                latestBlocks.add(block);
                 log.info("blockMined");
             }
 
@@ -105,9 +115,12 @@ public class PrivateMinerService {
                         status = MineStatus.FULL_DAG_GENERATE;
                         pushStatus(status);
                         break;
-                    case DATASET_GENERATED:
+                    case FULL_DATASET_GENERATED:
                         status = MineStatus.DAG_GENERATED;
                         pushStatus(status);
+                        break;
+                    case DATASET_READY:
+                        status = MineStatus.DAG_GENERATED;
                         break;
                 }
                 log.info("Dataset status updated: {}", datasetStatus);
@@ -117,9 +130,20 @@ public class PrivateMinerService {
         // Overriding mine.start which was reset in {@link com.ethercamp.harmony.Application}
         SystemProperties.resetToDefault();
         config.overrideParams("mine.start", new Boolean(SystemProperties.getDefault().minerStart()).toString());
-        if (config.minerStart() && !config.isSyncEnabled()) {
-            ethereum.getBlockMiner().startMining();
+        if (config.minerStart()) {
+            if (!config.isSyncEnabled()) {
+                ethereum.getBlockMiner().startMining();
+            } else {
+                this.status = MineStatus.AWAITING;
+            }
         }
+    }
+
+    /**
+     * @return average hash rate/second for our own mined blocks
+     */
+    public BigInteger calcAvgHashRate() {
+        return BlockUtils.calculateHashRate(new ArrayList<>(latestBlocks));
     }
 
     /**
@@ -138,6 +162,7 @@ public class PrivateMinerService {
         LIGHT_DAG_GENERATE,
         FULL_DAG_GENERATE,
         DAG_GENERATED,
-        MINING
+        MINING,
+        AWAITING // Mining is on, but we are on long sync, waiting for short sync
     }
 }

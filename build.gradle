@@ -99,7 +99,7 @@ dependencies {
     compile "org.ethereum:solcJ-all:0.4.19"                   // Solidity Compiler win/mac/linux binaries
 
     // don't forget to adjust {ethereumJ.version} in application.properties
-    compile ("org.ethereum:ethereumj-core:1.8.0-SNAPSHOT") {
+    compile ("org.ethereum:ethereumj-core:1.8.1-RELEASE") {
         changing = true
 
         exclude group: "log4j"
@@ -226,11 +226,10 @@ sourceCompatibility=1.8
 [compileJava, compileTestJava]*.options*.compilerArgs = ['-parameters']
 
 
-configurations.all {
-    // check for updates every build
-    // develop build only
-    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-}
+//configurations.all {
+//    // check for updates every build
+//    resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+//}
 
 
 /**
@@ -252,12 +251,6 @@ task runMain() {
 task runRopsten() {
     doLast {
         bootRunWithNetworkConfig('ropsten', true)
-    }
-}
-
-task runTest() {
-    doLast {
-        bootRunWithNetworkConfig('test', true)
     }
 }
 
